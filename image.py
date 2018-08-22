@@ -36,7 +36,7 @@ class Image:
         return self.width * self.height
 
     def has_alpha_channel(self):
-        return any(value > 0 for value in self.alphas)
+        return any(any(value > 0 for value in column) for column in self.alphas)
 
     def get_alpha(self, x, y, result_type=int):
         if result_type not in [int, float]:
@@ -145,6 +145,11 @@ class Image:
     def adjust_blues(self, func, color_type=int):
         for x, y in self:
             self.adjust_blue(x, y, func, color_type)
+
+    def set_rgb(self, x, y, value):
+        self.reds[x][y] = (value >> 16) & 0xff
+        self.greens[x][y] = (value >> 8) & 0xff
+        self.blues[x][y] = value & 0xff
 
     def set_color(self, x, y, color):
         if type(color) is RgbColor:
