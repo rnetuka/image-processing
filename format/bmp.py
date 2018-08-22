@@ -140,7 +140,7 @@ class DibHeader:
         header.image_width = image.width
         header.image_height = image.height
         header.planes = 1
-        header.pixel_dword_size = 4 if image.has_alpha else 3
+        header.pixel_dword_size = 4 if image.has_alpha_channel() else 3
         header.compression = 0
         header.image_data_size = ((header.pixel_dword_size * image.width) + len(BmpFormat.bitmap_data_padding(image.width, header.pixel_dword_size))) * image.height
         header.print_resolution_horizontal = 2835
