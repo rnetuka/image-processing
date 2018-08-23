@@ -169,6 +169,10 @@ class Image:
     def is_grayscale(self):
         return all(self.reds[x][y] == self.greens[x][y] == self.blues[x][y] for x, y in self)
 
+    @property
+    def coordinates(self):
+        return Coordinates(self)
+
     def __str__(self):
         return 'Image {} x {} px'.format(self.width, self.height)
 
@@ -176,25 +180,35 @@ class Image:
         return MatrixIterator(self)
 
 
-class MatrixIterator:
+class Coordinates:
 
     def __init__(self, image):
-        self.__image = image
-        self.__x = 0
-        self.__y = 0
+        self.image = image
+
+    def __iter__(self):
+        return MatrixIterator(self.image)
+
+
+class MatrixIterator:
+
+    def __init__(self, matrix):
+        self.max_x = matrix.width - 1
+        self.max_y = matrix.height - 1
+        self.x = 0
+        self.y = 0
 
     def __next__(self):
-        x = self.__x
-        y = self.__y
+        x = self.x
+        y = self.y
 
-        if y == self.__image.height:
+        if y > self.max_y:
             raise StopIteration
 
-        if x >= self.__image.width - 1:
-            self.__x = 0
-            self.__y += 1
+        if x >= self.max_x:
+            self.x = 0
+            self.y += 1
         else:
-            self.__x += 1
+            self.x += 1
 
         return x, y
 
