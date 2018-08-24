@@ -3,7 +3,7 @@
 
 
 def apply_negative(image):
-    for x, y in image:
+    for x, y in image.coordinates:
         image.reds[x][y] = 255 - image.reds[x][y]
         image.greens[x][y] = 255 - image.greens[x][y]
         image.blues[x][y] = 255 - image.blues[x][y]

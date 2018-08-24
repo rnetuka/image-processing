@@ -191,14 +191,16 @@ def write(image, path):
 
 
 if __name__ == '__main__':
-    image = read('../test.bmp')
-    write(image, '../test2.bmp')
+    from argparse import ArgumentParser
 
-    image2 = Image(2, 2)
-    image2.set_blue(0, 0, 255)
-    image2.set_green(1, 0, 255)
-    image2.set_red(0, 1, 255)
-    image2.set_rgb(1, 1, (255, 255, 255))
-    write(image2, '../test3.bmp')
+    parser = ArgumentParser(description='Scale image')
+    parser.add_argument('input_file', metavar='image', help='')
+    parser.add_argument('-o', '--out', dest='output_file', nargs='?', help='')
 
-    # imageio.read('test.bmp').negative().gamma_correction(0.5).save_as('test.png')
+    args = parser.parse_args()
+
+    input_file = args.input_file
+    output_file = args.output_file or input_file
+
+    image = read(input_file)
+    write(image, output_file)

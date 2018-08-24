@@ -1,3 +1,6 @@
+from matrix import MatrixIterator
+
+
 class LabColor:
 
     def __init__(self, l, a, b):
@@ -46,7 +49,10 @@ class LabColor:
         return RgbColor.from_lab(self.l, self.a, self.b)
 
     def __str__(self):
-        return 'Lab({}, {}, {})'.format(self.l, self.a, self.b)
+        return 'CIELAB (L = {}, a = {}, b = {})'.format(self.l, self.a, self.b)
+
+    def __repr__(self):
+        return 'lab({}, {}, {})'.format(self.l, self.a, self.b)
 
     @staticmethod
     def from_string(string):
@@ -62,3 +68,45 @@ class LabColor:
         values = values.split(',')
         values = [int(n) for n in values]
         return LabColor(*values)
+
+
+class LabMatrix:
+
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.l = [[0] * height for _ in range(width)]
+        self.a = [[0] * height for _ in range(width)]
+        self.b = [[0] * height for _ in range(width)]
+
+    def apply_to(self, image):
+        from color.rgb import RgbColor
+
+        for x, y in self:
+            rgb = RgbColor.from_lab(self.l[x][y], self.a[x][y], self.b[x][y])
+            image.reds[x][y] = rgb.red
+            image.greens[x][y] = rgb.green
+            image.blues[x][y] = rgb.blue
+
+    def __iter__(self):
+        return MatrixIterator(self)
+
+    @staticmethod
+    def from_image(image):
+        matrix = LabMatrix(image.width, image.height)
+        for x, y in image.coordinates:
+            lab_color = LabColor.from_rgb(image.reds[x][y], image.greens[x][y], image.blues[x][y])
+            matrix.l[x][y] = lab_color.l
+            matrix.a[x][y] = lab_color.a
+            matrix.b[x][y] = lab_color.b
+        return matrix
+
+
+if __name__ == '__main__':
+    import sys
+    from color.rgb import RgbColor
+
+    input_color = sys.argv[1]
+    input_color = RgbColor.from_string(input_color)
+
+    print(input_color.to_lab())

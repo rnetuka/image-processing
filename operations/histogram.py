@@ -1,5 +1,5 @@
 from collections import defaultdict
-from image import LuminanceMatrix
+from color.lab import LabMatrix
 
 
 def luminance_histogram_from_matrix(matrix):
@@ -11,7 +11,7 @@ def luminance_histogram_from_matrix(matrix):
 
 
 def equalize(image):
-    matrix = LuminanceMatrix.from_image(image)
+    matrix = LabMatrix.from_image(image)
 
     histogram = luminance_histogram_from_matrix(matrix)
 

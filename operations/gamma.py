@@ -1,5 +1,5 @@
 def correct_gamma(image, gamma=1):
-    for x, y in image:
+    for x, y in image.coordinates:
         red = image.get_red(x, y, float)
         green = image.get_green(x, y, float)
         blue = image.get_blue(x, y, float)

@@ -1,8 +1,8 @@
-import imageio
 import sys
 
+import imageio
+from operations.grayscale import convert_to_grayscale
 from operations.gamma import correct_gamma
-from operations.monochrome import convert_to_grayscale
 from operations.negative import apply_negative
 
 # main.py --negative --grayscale --gamma=0.3 -i venice.jpg -o venice2.jpg

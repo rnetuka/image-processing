@@ -1,52 +1,33 @@
-import sys
-
-from operations.monochrome import GrayscaleMatrix
+from copy import deepcopy
 
 
-def normalize(value, lowerBound, upperBound):
-    return (value - lowerBound) / (upperBound - lowerBound)
+class ConvolutionMask:
+
+    def __init__(self, *rows):
+        self.size = len(rows)
+        self.values = [[0] * self.size for _ in range(self.size)]
+
+        for y, row in enumerate(rows):
+            for x, value in enumerate(row):
+                self.values[x][y] = value
+
+    def get_relative(self, dx, dy):
+        return self.values[dx + self.size // 2][dy + self.size // 2]
 
 
-def apply(matrix, mask):
-    result = GrayscaleMatrix(matrix.width, matrix.height)
+def convolve(matrix, mask):
+    result = deepcopy(matrix)
 
-    offset = len(mask) // 2
+    offset = mask.size // 2
 
     for x in range(offset, matrix.width - offset):
         for y in range(offset, matrix.height - offset):
             g = 0
 
-            for i in range(-offset, offset):
-                for j in range(-offset, offset):
-                    g += mask[i][j] * matrix.luminance(x - i, y - j)
+            for i in range(-offset, offset + 1):
+                for j in range(-offset, offset + 1):
+                    g += mask.get_relative(i, j) * (matrix[x - i][y - j])
 
-            result.set_luminance(x, y, g)
-
-    return result
-
-
-def apply_all(matrix, *masks):
-    result = GrayscaleMatrix(matrix.width, matrix.height)
-
-    for mask in masks:
-        partial_result = apply(matrix, mask)
-
-        for x, y in result:
-            result.values[x][y] = abs(result.luminance(x, y)) + abs(partial_result.luminance(x, y))
-
-    lowest = sys.maxsize
-    highest = -1
-
-    for x, y in result:
-        g = result.luminance(x, y)
-
-        if g > highest:
-            highest = g
-
-        if g < lowest:
-            lowest = g
-
-    for x, y in result:
-        result.set_luminance(x, y, normalize(result.luminance(x, y), lowest, highest))
+            result[x][y] = g
 
     return result

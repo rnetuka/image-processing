@@ -7,7 +7,7 @@ def nearest_neighbor(image, ratio):
 
     result = Image(new_width, new_height)
 
-    for x, y in result:
+    for x, y in result.coordinates:
         i = int(x / ratio)
         j = int(y / ratio)
 
@@ -32,7 +32,7 @@ def bilinear_interpolation(image, ratio):
 
     result = Image(new_width, new_height)
 
-    for x, y in result:
+    for x, y in result.coordinates:
         i = int(x / ratio)
         j = int(y / ratio)
 

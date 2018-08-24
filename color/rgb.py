@@ -33,7 +33,7 @@ class RgbColor:
         from color.lab import LabColor
         return LabColor.from_rgb(self.r, self.g, self.b)
 
-    def __str__(self):
+    def __repr__(self):
         return 'rgb({}, {}, {})'.format(self.r, self.g, self.b)
 
     @staticmethod
@@ -82,3 +82,13 @@ class RgbColor:
         b = max(0.0, min(b, 1.0))
 
         return RgbColor(r, g, b)
+
+
+if __name__ == '__main__':
+    import sys
+    from color.lab import LabColor
+
+    input_color = sys.argv[1]
+    input_color = LabColor.from_string(input_color)
+
+    print(input_color.to_rgb())
